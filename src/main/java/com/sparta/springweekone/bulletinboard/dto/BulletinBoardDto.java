@@ -13,15 +13,13 @@ public class BulletinBoardDto {
     private Long id;
     private String title;
     private String mainText;
-    private String nickname;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
     public BulletinBoardDto(BulletinBoard board) {
         this.id = board.getId();
         this.title = board.getTitle();
-        this.mainText = board.getMainText();
-        this.nickname = board.getNickname();
+        this.mainText = board.getBody();
         this.createAt = board.getCreateAt();
         this.modifiedAt = board.getModifiedAt();
     }

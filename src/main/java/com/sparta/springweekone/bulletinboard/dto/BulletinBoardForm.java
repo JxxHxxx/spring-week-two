@@ -8,13 +8,11 @@ import lombok.NoArgsConstructor;
 public class BulletinBoardForm {
     private String password;
     private String title;
-    private String mainText;
-    private String nickname;
+    private String body;
 
-    public BulletinBoardForm(String password, String title, String mainText, String nickname) {
+    public BulletinBoardForm(String password, String title, String body) {
         this.password = password;
         this.title = title;
-        this.mainText = mainText;
-        this.nickname = nickname;
+        this.body = body;
     }
 }
