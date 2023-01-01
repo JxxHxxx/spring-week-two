@@ -66,12 +66,22 @@ public class BulletinBoardService {
     }
 
     @Transactional
-    public Message update(Long id, BulletinBoardForm boardForm) {
+    public Message update(Long id, BulletinBoardForm boardForm, HttpServletRequest request) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-//        if (isNotSame(boardForm.getPassword(), board.getPassword())) {
-//            return new Message(false, null);
-//        }
+        String token = jwtUtil.resolveToken(request);
+        
+        if (token == null) {
+            return null;
+        }
+        
+        if (!jwtUtil.validateToken(token)) {
+            return null;
+        }
+        if (!jwtUtil.getUserInfoFromToken(token).getSubject().equals(board.getUsername())) {
+            throw new IllegalArgumentException("사용자가 일치하지 않습니다.");
+        }
+
 
         board.update(boardForm);
 

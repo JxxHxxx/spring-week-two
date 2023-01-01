@@ -39,8 +39,8 @@ public class BulletinBoardController {
 
     // 선택 게시글 수정
     @PatchMapping("/bulletin-boards/{id}")
-    public ResponseEntity<Message> update(@PathVariable Long id, @RequestBody BulletinBoardForm boardForm) {
-        Message message = bulletinBoardService.update(id, boardForm);
+    public ResponseEntity<Message> update(@PathVariable Long id, @RequestBody BulletinBoardForm boardForm, HttpServletRequest request) {
+        Message message = bulletinBoardService.update(id, boardForm, request);
 
         if (message.getSuccess() == false) {
             return new ResponseEntity<>(message, UNAUTHORIZED);
