@@ -1,7 +1,11 @@
-package com.sparta.springweekone.bulletinboard.domain;
-import com.sparta.springweekone.bulletinboard.dto.*;
-import com.sparta.springweekone.bulletinboard.entity.BulletinBoard;
-import com.sparta.springweekone.bulletinboard.repository.BulletinBoardRepository;
+package com.sparta.springweektwo.bulletinboard.domain;
+import com.sparta.springweektwo.bulletinboard.dto.*;
+import com.sparta.springweektwo.bulletinboard.entity.BulletinBoard;
+import com.sparta.springweektwo.bulletinboard.repository.BulletinBoardRepository;
+import com.sparta.springweektwo.jwt.JwtUtil;
+import com.sparta.springweektwo.member.entity.Member;
+import com.sparta.springweektwo.member.repository.MemberRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

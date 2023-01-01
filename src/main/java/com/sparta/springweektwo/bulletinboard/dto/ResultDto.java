@@ -1,4 +1,4 @@
-package com.sparta.springweekone.bulletinboard.dto;
+package com.sparta.springweektwo.bulletinboard.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
-package com.sparta.springweekone.bulletinboard.repository;
+package com.sparta.springweektwo.bulletinboard.repository;
 
-import com.sparta.springweekone.bulletinboard.entity.BulletinBoard;
+import com.sparta.springweektwo.bulletinboard.entity.BulletinBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

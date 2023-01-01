@@ -1,8 +1,8 @@
-package com.sparta.springweekone.bulletinboard.domain;
+package com.sparta.springweektwo.bulletinboard.domain;
 
-import com.sparta.springweekone.bulletinboard.dto.*;
-import com.sparta.springweekone.bulletinboard.entity.BulletinBoard;
-import com.sparta.springweekone.bulletinboard.repository.BulletinBoardRepository;
+import com.sparta.springweektwo.bulletinboard.dto.*;
+import com.sparta.springweektwo.bulletinboard.entity.BulletinBoard;
+import com.sparta.springweektwo.bulletinboard.repository.BulletinBoardRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

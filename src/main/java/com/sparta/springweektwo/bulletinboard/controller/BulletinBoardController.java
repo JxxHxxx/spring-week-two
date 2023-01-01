@@ -1,7 +1,8 @@
-package com.sparta.springweekone.bulletinboard.controller;
+package com.sparta.springweektwo.bulletinboard.controller;
 
-import com.sparta.springweekone.bulletinboard.domain.BulletinBoardService;
-import com.sparta.springweekone.bulletinboard.dto.*;
+import com.sparta.springweektwo.bulletinboard.domain.BulletinBoardService;
+import com.sparta.springweektwo.bulletinboard.dto.*;
+import com.sparta.springweektwo.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

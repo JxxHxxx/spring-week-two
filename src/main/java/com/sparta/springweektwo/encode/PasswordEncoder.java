@@ -1,4 +1,4 @@
-package com.sparta.springweekone.encode;
+package com.sparta.springweektwo.encode;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

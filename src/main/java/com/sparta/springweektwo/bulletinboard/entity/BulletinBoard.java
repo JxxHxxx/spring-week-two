@@ -1,8 +1,8 @@
-package com.sparta.springweekone.bulletinboard.entity;
+package com.sparta.springweektwo.bulletinboard.entity;
 
-import com.sparta.springweekone.Timestamped;
-import com.sparta.springweekone.bulletinboard.dto.BulletinBoardForm;
-import com.sparta.springweekone.member.entity.Member;
+import com.sparta.springweektwo.Timestamped;
+import com.sparta.springweektwo.bulletinboard.dto.BulletinBoardForm;
+import com.sparta.springweektwo.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
