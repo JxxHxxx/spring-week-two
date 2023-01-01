@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class BulletinBoardDto {
+public class BulletinBoardResponseDto {
 
     private Long id;
     private String title;
@@ -17,7 +17,7 @@ public class BulletinBoardDto {
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
-    public BulletinBoardDto(BulletinBoard board) {
+    public BulletinBoardResponseDto(BulletinBoard board) {
         this.id = board.getId();
         this.title = board.getTitle();
         this.username = board.getMember().getUsername();
