@@ -44,4 +44,11 @@ public class BulletinBoard extends Timestamped {
         this.title = boardForm.getTitle();
         this.body = boardForm.getBody();
     }
+    public String getUsername() {
+        return this.member.getUsername();
+    }
+
+    public void softDelete(Boolean bool) {
+        this.isDeleted = bool;
+    }
 }
