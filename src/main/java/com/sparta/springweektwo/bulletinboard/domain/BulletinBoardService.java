@@ -54,14 +54,26 @@ public class BulletinBoardService {
         return new BulletinBoardDto(board);
     }
 
-    public ResultDto delete(Long id, PasswordDto passwordDto) {
+    @Transactional
+    public ResultDto softDelete(Long id, PasswordDto passwordDto, HttpServletRequest request) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-//        if (isNotSame(passwordDto.getPassword(), board.getPassword())) {
-//            return new ResultDto(false);
-//        }
+        String token = jwtUtil.resolveToken(request);
 
-        bulletinBoardRepository.deleteById(id);
+        if (token == null) {
+            return null;
+        }
+
+        if (!jwtUtil.validateToken(token)) {
+            return null;
+        }
+
+        if (!jwtUtil.getUserInfoFromToken(token).getSubject().equals(board.getUsername())) {
+            throw new IllegalArgumentException("사용자가 일치하지 않습니다.");
+        }
+
+        board.softDelete(true);
+
         return new ResultDto(true);
     }
 
