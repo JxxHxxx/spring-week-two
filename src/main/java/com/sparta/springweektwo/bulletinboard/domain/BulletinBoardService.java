@@ -42,10 +42,10 @@ public class BulletinBoardService {
         return new BulletinBoardDto(saveBoard);
     }
 
-    public List<BulletinBoardDto> readAll() {
+    public List<BulletinBoardResponseDto> readAll() {
         List<BulletinBoard> boards = bulletinBoardRepository.findAllByOrderByCreateAtDesc();
 
-        return boards.stream().map(bulletinBoard -> new BulletinBoardDto(bulletinBoard)).collect(Collectors.toList());
+        return boards.stream().map(bulletinBoard -> new BulletinBoardResponseDto(bulletinBoard)).collect(Collectors.toList());
     }
 
     public BulletinBoardDto readOne(Long id) {

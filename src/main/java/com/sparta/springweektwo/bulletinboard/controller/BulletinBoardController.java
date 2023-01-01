@@ -29,8 +29,9 @@ public class BulletinBoardController {
 
     // 전체 게시글 조회
     @GetMapping("/bulletin-boards")
-    public List<BulletinBoardDto> readAll() {
-        return bulletinBoardService.readAll();
+    public BulletinBoardListResponseDto readAll() {
+        List<BulletinBoardResponseDto> boardDtos = bulletinBoardService.readAll();
+        return new BulletinBoardListResponseDto(boardDtos);
     }
     // 선택 게시글 조회
     @GetMapping("/bulletin-boards/{id}")
