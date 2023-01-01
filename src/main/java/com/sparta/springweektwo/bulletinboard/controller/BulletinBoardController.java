@@ -4,23 +4,27 @@ import com.sparta.springweektwo.bulletinboard.domain.BulletinBoardService;
 import com.sparta.springweektwo.bulletinboard.dto.*;
 import com.sparta.springweektwo.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class BulletinBoardController {
 
     private final BulletinBoardService bulletinBoardService;
-
+    private final JwtUtil jwtUtil;
     // 게시글 작성
     @PostMapping("/bulletin-boards")
-    public BulletinBoardDto write(@RequestBody BulletinBoardForm boardForm) {
-        return bulletinBoardService.create(boardForm);
+    public BulletinBoardDto write(@RequestBody BulletinBoardForm boardForm, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        log.info(token);
+        return bulletinBoardService.create(boardForm, request);
     }
 
     // 전체 게시글 조회

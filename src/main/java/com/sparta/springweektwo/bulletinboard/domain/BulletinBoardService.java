@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,9 +19,24 @@ import java.util.stream.Collectors;
 public class BulletinBoardService {
 
     private final BulletinBoardRepository bulletinBoardRepository;
+    private final MemberRepository memberRepository;
+    private final JwtUtil jwtUtil;
 
-    public BulletinBoardDto create(BulletinBoardForm boardForm) {
-        BulletinBoard board = new BulletinBoard(boardForm);
+    public BulletinBoardDto create(BulletinBoardForm boardForm, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+
+        if (token == null) {
+            return null;
+        }
+
+        if (!jwtUtil.validateToken(token)) {
+            return null;
+        }
+
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow();
+
+        BulletinBoard board = new BulletinBoard(boardForm, member);
         BulletinBoard saveBoard = bulletinBoardRepository.save(board);
 
         return new BulletinBoardDto(saveBoard);
@@ -41,9 +57,9 @@ public class BulletinBoardService {
     public ResultDto delete(Long id, PasswordDto passwordDto) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        if (isNotSame(passwordDto.getPassword(), board.getPassword())) {
-            return new ResultDto(false);
-        }
+//        if (isNotSame(passwordDto.getPassword(), board.getPassword())) {
+//            return new ResultDto(false);
+//        }
 
         bulletinBoardRepository.deleteById(id);
         return new ResultDto(true);
@@ -53,9 +69,9 @@ public class BulletinBoardService {
     public Message update(Long id, BulletinBoardForm boardForm) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        if (isNotSame(boardForm.getPassword(), board.getPassword())) {
-            return new Message(false, null);
-        }
+//        if (isNotSame(boardForm.getPassword(), board.getPassword())) {
+//            return new Message(false, null);
+//        }
 
         board.update(boardForm);
 
