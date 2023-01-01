@@ -45,13 +45,19 @@ public class BulletinBoardService {
     public List<BulletinBoardResponseDto> readAll() {
         List<BulletinBoard> boards = bulletinBoardRepository.findAllByOrderByCreateAtDesc();
 
-        return boards.stream().map(bulletinBoard -> new BulletinBoardResponseDto(bulletinBoard)).collect(Collectors.toList());
+        return boards.stream().map(bulletinBoard -> new BulletinBoardResponseDto(bulletinBoard))
+                .filter(bulletinBoardResponseDto -> bulletinBoardResponseDto.getIsDeleted() == null)
+                .collect(Collectors.toList());
     }
 
     public BulletinBoardDto readOne(Long id) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        return new BulletinBoardDto(board);
+        if (board.getIsDeleted() != null) {
+            throw new IllegalArgumentException("삭제된 게시글입니다.");
+        }
+
+        return new BulletinBoardResponseDto(board);
     }
 
     @Transactional
