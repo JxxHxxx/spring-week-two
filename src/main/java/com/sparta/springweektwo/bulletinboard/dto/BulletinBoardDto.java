@@ -12,14 +12,14 @@ public class BulletinBoardDto {
 
     private Long id;
     private String title;
-    private String mainText;
+    private String body;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
     public BulletinBoardDto(BulletinBoard board) {
         this.id = board.getId();
         this.title = board.getTitle();
-        this.mainText = board.getBody();
+        this.body = board.getBody();
         this.createAt = board.getCreateAt();
         this.modifiedAt = board.getModifiedAt();
     }
