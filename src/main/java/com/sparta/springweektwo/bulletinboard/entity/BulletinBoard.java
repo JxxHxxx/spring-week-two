@@ -19,25 +19,29 @@ public class BulletinBoard extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String password;
-    @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String body;
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
     
     public BulletinBoard(BulletinBoardForm boardForm) {
-        this.password = boardForm.getPassword();
         this.body = boardForm.getBody();
         this.title = boardForm.getTitle();
     }
 
-    public void update(BulletinBoardForm bulletinBoardDto) {
-        this.title = bulletinBoardDto.getTitle();
-        this.body = bulletinBoardDto.getBody();
+    public BulletinBoard(BulletinBoardForm boardForm, Member member) {
+        this.title = boardForm.getTitle();
+        this.body = boardForm.getBody();
+        this.member = member;
+        this.isDeleted = null;
+    }
+
+    public void update(BulletinBoardForm boardForm) {
+        this.title = boardForm.getTitle();
+        this.body = boardForm.getBody();
     }
 }
