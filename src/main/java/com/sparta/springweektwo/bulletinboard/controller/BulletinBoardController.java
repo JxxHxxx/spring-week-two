@@ -21,9 +21,7 @@ public class BulletinBoardController {
     private final JwtUtil jwtUtil;
     // 게시글 작성
     @PostMapping("/bulletin-boards")
-    public BulletinBoardDto write(@RequestBody BulletinBoardForm boardForm, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        log.info(token);
+    public BulletinBoardResponseDto write(@RequestBody BulletinBoardForm boardForm, HttpServletRequest request) {
         return bulletinBoardService.create(boardForm, request);
     }
 
@@ -35,7 +33,7 @@ public class BulletinBoardController {
     }
     // 선택 게시글 조회
     @GetMapping("/bulletin-boards/{id}")
-    public BulletinBoardDto readOne(@PathVariable Long id) {
+    public BulletinBoardResponseDto readOne(@PathVariable Long id) {
         return bulletinBoardService.readOne(id);
     }
 
