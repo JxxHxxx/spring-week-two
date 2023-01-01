@@ -22,7 +22,7 @@ public class BulletinBoardService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
-    public BulletinBoardDto create(BulletinBoardForm boardForm, HttpServletRequest request) {
+    public BulletinBoardResponseDto create(BulletinBoardForm boardForm, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
 
         if (token == null) {
@@ -39,7 +39,7 @@ public class BulletinBoardService {
         BulletinBoard board = new BulletinBoard(boardForm, member);
         BulletinBoard saveBoard = bulletinBoardRepository.save(board);
 
-        return new BulletinBoardDto(saveBoard);
+        return new BulletinBoardResponseDto(saveBoard);
     }
 
     public List<BulletinBoardResponseDto> readAll() {
@@ -50,7 +50,7 @@ public class BulletinBoardService {
                 .collect(Collectors.toList());
     }
 
-    public BulletinBoardDto readOne(Long id) {
+    public BulletinBoardResponseDto readOne(Long id) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         if (board.getIsDeleted() != null) {
@@ -103,7 +103,7 @@ public class BulletinBoardService {
 
         board.update(boardForm);
 
-        return new Message(true, new BulletinBoardDto(board));
+        return new Message(true, new BulletinBoardResponseDto(board));
     }
 
     private boolean isNotSame(String passwordOfDto, String passwordOfEntity) {
