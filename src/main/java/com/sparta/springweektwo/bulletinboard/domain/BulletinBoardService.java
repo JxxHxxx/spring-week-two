@@ -61,7 +61,7 @@ public class BulletinBoardService {
     }
 
     @Transactional
-    public ResultDto softDelete(Long id, PasswordDto passwordDto, HttpServletRequest request) {
+    public ResultDto softDelete(Long id, HttpServletRequest request) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         String token = jwtUtil.resolveToken(request);
@@ -100,14 +100,8 @@ public class BulletinBoardService {
             throw new IllegalArgumentException("사용자가 일치하지 않습니다.");
         }
 
-
         board.update(boardForm);
 
         return new Message(true, new BulletinBoardResponseDto(board));
     }
-
-    private boolean isNotSame(String passwordOfDto, String passwordOfEntity) {
-        return !passwordOfEntity.equals(passwordOfDto);
-    }
-
 }
