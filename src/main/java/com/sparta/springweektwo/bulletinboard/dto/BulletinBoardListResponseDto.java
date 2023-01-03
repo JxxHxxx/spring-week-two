@@ -6,9 +6,9 @@ import java.util.List;
 
 @Getter
 public class BulletinBoardListResponseDto {
-    private List<BulletinBoardResponseDto> postList;
+    private List<BulletinBoardResponseDto> boardList;
 
-    public BulletinBoardListResponseDto(List<BulletinBoardResponseDto> postList) {
-        this.postList = postList;
+    public BulletinBoardListResponseDto(List<BulletinBoardResponseDto> boardList) {
+        this.boardList = boardList;
     }
 }
