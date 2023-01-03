@@ -1,4 +1,4 @@
-package com.sparta.springweektwo.bulletinboard.domain;
+package com.sparta.springweektwo.bulletinboard.service;
 import com.sparta.springweektwo.bulletinboard.dto.*;
 import com.sparta.springweektwo.bulletinboard.entity.BulletinBoard;
 import com.sparta.springweektwo.bulletinboard.repository.BulletinBoardRepository;
@@ -51,6 +51,16 @@ public class BulletinBoardService {
     }
 
     public BulletinBoardResponseDto readOne(Long id) {
+        BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        if (board.getIsDeleted() != null) {
+            throw new IllegalArgumentException("삭제된 게시글입니다.");
+        }
+
+        return new BulletinBoardResponseDto(board);
+    }
+
+    public BulletinBoardResponseDto readOneV2(Long id) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         if (board.getIsDeleted() != null) {

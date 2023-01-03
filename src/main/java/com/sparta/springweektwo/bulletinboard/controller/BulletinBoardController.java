@@ -1,8 +1,9 @@
 package com.sparta.springweektwo.bulletinboard.controller;
 
-import com.sparta.springweektwo.bulletinboard.domain.BulletinBoardService;
+import com.sparta.springweektwo.bulletinboard.service.BulletinBoardService;
 import com.sparta.springweektwo.bulletinboard.dto.*;
-import com.sparta.springweektwo.jwt.JwtUtil;
+import com.sparta.springweektwo.comment.entity.Comment;
+import com.sparta.springweektwo.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,8 @@ import static org.springframework.http.HttpStatus.*;
 public class BulletinBoardController {
 
     private final BulletinBoardService bulletinBoardService;
-    private final JwtUtil jwtUtil;
+    private final CommentService commentService;
+
     // 게시글 작성
     @PostMapping("/bulletin-boards")
     public BulletinBoardResponseDto write(@RequestBody BulletinBoardForm boardForm, HttpServletRequest request) {
@@ -34,7 +36,10 @@ public class BulletinBoardController {
     // 선택 게시글 조회
     @GetMapping("/bulletin-boards/{id}")
     public BulletinBoardResponseDto readOne(@PathVariable Long id) {
-        return bulletinBoardService.readOne(id);
+        List<Comment> comments = commentService.readAll(id);
+        BulletinBoardResponseDto board = bulletinBoardService.readOneV2(id);
+
+        return new BulletinBoardResponseDto(board, comments);
     }
 
     // 선택 게시글 수정
