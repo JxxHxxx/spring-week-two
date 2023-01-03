@@ -2,17 +2,18 @@ package com.sparta.springweektwo.bulletinboard.entity;
 
 import com.sparta.springweektwo.Timestamped;
 import com.sparta.springweektwo.bulletinboard.dto.BulletinBoardForm;
+import com.sparta.springweektwo.comment.entity.Comment;
 import com.sparta.springweektwo.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@ToString
 public class BulletinBoard extends Timestamped {
 
     @Id @Column(name = "BULLETIN_BOARD_ID")
@@ -24,14 +25,12 @@ public class BulletinBoard extends Timestamped {
     private String body;
     private Boolean isDeleted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
-    
-    public BulletinBoard(BulletinBoardForm boardForm) {
-        this.body = boardForm.getBody();
-        this.title = boardForm.getTitle();
-    }
+
+    @OneToMany(mappedBy = "bulletinBoard", fetch = FetchType.EAGER)
+    private List<Comment> comments = new ArrayList<>();
 
     public BulletinBoard(BulletinBoardForm boardForm, Member member) {
         this.title = boardForm.getTitle();
