@@ -1,11 +1,11 @@
 package com.sparta.springweektwo.member.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter // 테스트 용
-public class LoginDto {
+@Builder
+public class LoginRequestDto {
     private String username;
     private String password;
 }
