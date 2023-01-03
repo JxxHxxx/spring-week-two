@@ -1,7 +1,7 @@
 package com.sparta.springweektwo.member.controller;
 
 import com.sparta.springweektwo.member.dto.AuthMessage;
-import com.sparta.springweektwo.member.dto.LoginDto;
+import com.sparta.springweektwo.member.dto.LoginRequestDto;
 import com.sparta.springweektwo.member.dto.SignUpRequestDto;
 import com.sparta.springweektwo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class MemberController {
     }
 
     @PostMapping("auth/login")
-    public ResponseEntity<AuthMessage> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public ResponseEntity<AuthMessage> login(@RequestBody LoginRequestDto loginDto, HttpServletResponse response) {
         String memberToken;
 
         try {

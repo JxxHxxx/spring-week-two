@@ -1,15 +1,16 @@
 package com.sparta.springweektwo.member.service;
 
 import com.sparta.springweektwo.jwt.JwtUtil;
-import com.sparta.springweektwo.member.dto.LoginDto;
+import com.sparta.springweektwo.member.dto.LoginRequestDto;
 import com.sparta.springweektwo.member.dto.SignUpRequestDto;
 import com.sparta.springweektwo.member.entity.Member;
 import com.sparta.springweektwo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -30,7 +31,7 @@ public class MemberService {
         return SIGNUP_SUCCESS;
     }
 
-    public String login(LoginDto loginDto) {
+    public String login(LoginRequestDto loginDto) {
         Optional<Member> findMember = memberRepository.findByUsername(loginDto.getUsername());
 
         if (findMember.isEmpty()) {
