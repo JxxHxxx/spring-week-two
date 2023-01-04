@@ -65,7 +65,7 @@ public class BulletinBoardService {
     }
 
     @Transactional
-    public ResultDto softDelete(Long id, HttpServletRequest request) {
+    public ResultDto softDelete(Long id, HttpServletRequest request) throws IllegalAccessException {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         String token = jwtUtil.resolveToken(request);
@@ -78,6 +78,10 @@ public class BulletinBoardService {
 
         if (!jwtUtil.validateToken(token) || member.getGrade().equals(ADMIN)) {
             return null;
+        }
+
+        if (!board.getMember().getId().equals(member.getId())) {
+            throw new IllegalAccessException("작성자만 삭제/수정할 수 있습니다.");
         }
 
         board.softDelete(true);
@@ -86,7 +90,7 @@ public class BulletinBoardService {
     }
 
     @Transactional
-    public Message update(Long id, BulletinBoardForm boardForm, HttpServletRequest request) {
+    public Message update(Long id, BulletinBoardForm boardForm, HttpServletRequest request) throws IllegalAccessException {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         String token = jwtUtil.resolveToken(request);
@@ -94,11 +98,13 @@ public class BulletinBoardService {
         Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow();
 
         if (token == null) {
-            return null;
         }
         
         if (!jwtUtil.validateToken(token) || member.getGrade().equals(ADMIN)) {
-            return null;
+        }
+
+        if (!board.getMember().getId().equals(member.getId())) {
+            throw new IllegalAccessException("작성자만 삭제/수정할 수 있습니다.");
         }
 
         board.update(boardForm);

@@ -39,16 +39,17 @@ public class CommentService {
         if (!jwtUtil.validateToken(token)) { // 유효한 토큰 검사
             return null;
         }
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
         BulletinBoard bulletinBoard = bulletinBoardRepository.findById(boardId).orElseThrow(); // 게시글 유무 확인
 
-        Comment comment = new Comment(commentForm, bulletinBoard);
+        Comment comment = new Comment(commentForm, bulletinBoard, claims.getSubject());
         commentRepository.save(comment);
 
         return commentForm;
     }
 
     @Transactional
-    public CommentForm update(Long commentId, CommentForm commentForm, HttpServletRequest request) {
+    public CommentForm update(Long commentId, CommentForm commentForm, HttpServletRequest request) throws IllegalAccessException {
         String token = jwtUtil.resolveToken(request);
         Claims claims = jwtUtil.getUserInfoFromToken(token);
         Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow();
@@ -56,14 +57,20 @@ public class CommentService {
             return null;
         }
 
+
         Comment comment = commentRepository.findById(commentId).orElseThrow();
+
+        if (!comment.getUsername().equals(member.getUsername())) {
+            throw new IllegalAccessException("작성자만 삭제/수정할 수 있습니다.");
+        }
+
         Comment updateComment = comment.update(commentForm.getBody());
 
         return new CommentForm(updateComment);
     }
 
     @Transactional
-    public DeleteMessage softDelete(Long commentId, HttpServletRequest request) {
+    public DeleteMessage softDelete(Long commentId, HttpServletRequest request) throws IllegalAccessException {
         String token = jwtUtil.resolveToken(request);
         Claims claims = jwtUtil.getUserInfoFromToken(token);
         Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow();
@@ -72,6 +79,11 @@ public class CommentService {
         }
 
         Comment comment = commentRepository.findById(commentId).orElseThrow();
+
+        if (!comment.getUsername().equals(member.getUsername())) {
+            throw new IllegalAccessException("작성자만 삭제/수정할 수 있습니다.");
+        }
+
         comment.setSoftDelete();
 
         return new DeleteMessage("삭제 성공", OK);
@@ -80,11 +92,6 @@ public class CommentService {
     public List<Comment> read(Long id) {
         List<Comment> comments = commentRepository.findByBulletinBoard_Id(id);
         comments.forEach(comment -> log.info("comment : body = {}, isDeleted = {}", comment.getBody(), comment.getIsDeleted()));
-        return comments.stream().filter(comment -> comment.getIsDeleted() != true).collect(Collectors.toList());
-    }
-
-    public List<Comment> readAll() {
-        List<Comment> comments = commentRepository.findAll();
         return comments.stream().filter(comment -> comment.getIsDeleted() != true).collect(Collectors.toList());
     }
 }
