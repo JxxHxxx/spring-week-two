@@ -20,6 +20,8 @@ public class Comment extends Timestamped {
     @Id @Column(name = "COMMENT_ID")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
+    private String username;
     @Column(nullable = false)
     private String body;
     private Boolean isDeleted;
@@ -29,7 +31,8 @@ public class Comment extends Timestamped {
     @JsonProperty(access = WRITE_ONLY)
     private BulletinBoard bulletinBoard;
 
-    public Comment(CommentForm commentForm, BulletinBoard bulletinBoard) {
+    public Comment(CommentForm commentForm, BulletinBoard bulletinBoard, String username) {
+        this.username = username;
         this.body = commentForm.getBody();
         this.bulletinBoard = bulletinBoard;
         this.isDeleted = false;
