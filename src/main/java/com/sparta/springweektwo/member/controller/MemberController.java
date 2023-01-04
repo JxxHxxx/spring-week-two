@@ -23,7 +23,14 @@ public class MemberController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<AuthMessage> signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
-        String message = memberService.signUp(signUpRequestDto);
+        String message;
+        try {
+            message = memberService.signUp(signUpRequestDto);
+        }
+        catch (IllegalArgumentException e) {
+            AuthMessage authMessage = new AuthMessage("중복된 username 입니다.", BAD_REQUEST.value());
+            return new ResponseEntity<>(authMessage, BAD_REQUEST);
+        }
         AuthMessage authMessage = new AuthMessage(message, OK.value());
 
         return new ResponseEntity<>(authMessage, OK);
