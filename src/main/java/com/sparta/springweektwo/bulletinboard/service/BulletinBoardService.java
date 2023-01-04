@@ -2,6 +2,7 @@ package com.sparta.springweektwo.bulletinboard.service;
 import com.sparta.springweektwo.bulletinboard.dto.*;
 import com.sparta.springweektwo.bulletinboard.entity.BulletinBoard;
 import com.sparta.springweektwo.bulletinboard.repository.BulletinBoardRepository;
+import com.sparta.springweektwo.comment.service.CommentService;
 import com.sparta.springweektwo.jwt.JwtUtil;
 import com.sparta.springweektwo.member.entity.Member;
 import com.sparta.springweektwo.member.repository.MemberRepository;
@@ -20,6 +21,7 @@ public class BulletinBoardService {
 
     private final BulletinBoardRepository bulletinBoardRepository;
     private final MemberRepository memberRepository;
+    private final CommentService commentService;
     private final JwtUtil jwtUtil;
 
     public BulletinBoardResponseDto create(BulletinBoardForm boardForm, HttpServletRequest request) {
@@ -43,24 +45,14 @@ public class BulletinBoardService {
     }
 
     public List<BulletinBoardResponseDto> readAll() {
-        List<BulletinBoard> boards = bulletinBoardRepository.findAllByOrderByCreateAtDesc();
+        List<BulletinBoard> boards = bulletinBoardRepository.findAllByOrderByCreateAtDesc()
+                .stream().filter(bulletinBoard -> bulletinBoard.getIsDeleted() == null).collect(Collectors.toList());
 
-        return boards.stream().map(bulletinBoard -> new BulletinBoardResponseDto(bulletinBoard))
-                .filter(bulletinBoardResponseDto -> bulletinBoardResponseDto.getIsDeleted() == null)
-                .collect(Collectors.toList());
+        return boards.stream().map(bulletinBoard -> new BulletinBoardResponseDto(bulletinBoard, commentService.read(bulletinBoard.getId()))).collect(Collectors.toList());
+
     }
 
     public BulletinBoardResponseDto readOne(Long id) {
-        BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-
-        if (board.getIsDeleted() != null) {
-            throw new IllegalArgumentException("삭제된 게시글입니다.");
-        }
-
-        return new BulletinBoardResponseDto(board);
-    }
-
-    public BulletinBoardResponseDto readOneV2(Long id) {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         if (board.getIsDeleted() != null) {
