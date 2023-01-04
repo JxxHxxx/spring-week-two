@@ -32,6 +32,17 @@ public class BulletinBoardResponseDto {
         this.isDeleted = board.getIsDeleted();
     }
 
+    public BulletinBoardResponseDto(BulletinBoard board, List<Comment> comments) {
+        this.id = board.getId();
+        this.title = board.getTitle();
+        this.username = board.getUsername();
+        this.comment = comments;
+        this.body = board.getBody();
+        this.createAt = board.getCreateAt();
+        this.modifiedAt = board.getModifiedAt();
+        this.isDeleted = board.getIsDeleted();
+    }
+
     public BulletinBoardResponseDto(BulletinBoardResponseDto board, List<Comment> comments) {
         this.id = board.getId();
         this.title = board.getTitle();
