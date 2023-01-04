@@ -6,11 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+import static com.sparta.springweektwo.member.entity.MemberGrade.USER;
 import static javax.persistence.GenerationType.*;
 
 @Entity
@@ -26,9 +24,13 @@ public class Member extends Timestamped {
     private String username;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MemberGrade grade;
 
     public Member(SignUpRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
+        this.grade = USER;
     }
 }

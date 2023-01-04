@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sparta.springweektwo.member.entity.MemberGrade.*;
+
 @Service
 @RequiredArgsConstructor
 public class BulletinBoardService {
@@ -67,17 +69,15 @@ public class BulletinBoardService {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         String token = jwtUtil.resolveToken(request);
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow();
 
         if (token == null) {
             return null;
         }
 
-        if (!jwtUtil.validateToken(token)) {
+        if (!jwtUtil.validateToken(token) || member.getGrade().equals(ADMIN)) {
             return null;
-        }
-
-        if (!jwtUtil.getUserInfoFromToken(token).getSubject().equals(board.getUsername())) {
-            throw new IllegalArgumentException("사용자가 일치하지 않습니다.");
         }
 
         board.softDelete(true);
@@ -90,16 +90,15 @@ public class BulletinBoardService {
         BulletinBoard board = bulletinBoardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         String token = jwtUtil.resolveToken(request);
-        
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow();
+
         if (token == null) {
             return null;
         }
         
-        if (!jwtUtil.validateToken(token)) {
+        if (!jwtUtil.validateToken(token) || member.getGrade().equals(ADMIN)) {
             return null;
-        }
-        if (!jwtUtil.getUserInfoFromToken(token).getSubject().equals(board.getUsername())) {
-            throw new IllegalArgumentException("사용자가 일치하지 않습니다.");
         }
 
         board.update(boardForm);

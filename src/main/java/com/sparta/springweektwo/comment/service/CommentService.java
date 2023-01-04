@@ -7,6 +7,10 @@ import com.sparta.springweektwo.comment.dto.DeleteMessage;
 import com.sparta.springweektwo.comment.entity.Comment;
 import com.sparta.springweektwo.comment.repository.CommentRepository;
 import com.sparta.springweektwo.jwt.JwtUtil;
+import com.sparta.springweektwo.member.entity.Member;
+import com.sparta.springweektwo.member.entity.MemberGrade;
+import com.sparta.springweektwo.member.repository.MemberRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sparta.springweektwo.member.entity.MemberGrade.*;
 import static org.springframework.http.HttpStatus.*;
 
 
@@ -26,6 +31,7 @@ import static org.springframework.http.HttpStatus.*;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final BulletinBoardRepository bulletinBoardRepository;
+    private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
     public CommentForm write(Long boardId, CommentForm commentForm, HttpServletRequest request) {
@@ -44,7 +50,9 @@ public class CommentService {
     @Transactional
     public CommentForm update(Long commentId, CommentForm commentForm, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
-        if (!jwtUtil.validateToken(token)) { // 유효한 토큰 검사
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow();
+        if (!jwtUtil.validateToken(token) || member.getGrade().equals(ADMIN)) { // 유효한 토큰 검사
             return null;
         }
 
@@ -57,7 +65,9 @@ public class CommentService {
     @Transactional
     public DeleteMessage softDelete(Long commentId, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
-        if (!jwtUtil.validateToken(token)) { // 유효한 토큰 검사
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Member member = memberRepository.findByUsername(claims.getSubject()).orElseThrow();
+        if (!jwtUtil.validateToken(token) || member.getGrade().equals(ADMIN)) { // 유효한 토큰 검사
             return new DeleteMessage("토큰이 유효하지 않습니다.", BAD_REQUEST);
         }
 
@@ -67,10 +77,14 @@ public class CommentService {
         return new DeleteMessage("삭제 성공", OK);
     }
 
-    public List<Comment> readAll(Long id) {
+    public List<Comment> read(Long id) {
         List<Comment> comments = commentRepository.findByBulletinBoard_Id(id);
         comments.forEach(comment -> log.info("comment : body = {}, isDeleted = {}", comment.getBody(), comment.getIsDeleted()));
         return comments.stream().filter(comment -> comment.getIsDeleted() != true).collect(Collectors.toList());
+    }
 
+    public List<Comment> readAll() {
+        List<Comment> comments = commentRepository.findAll();
+        return comments.stream().filter(comment -> comment.getIsDeleted() != true).collect(Collectors.toList());
     }
 }
