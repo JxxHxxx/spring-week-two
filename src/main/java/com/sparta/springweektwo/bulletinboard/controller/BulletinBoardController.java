@@ -4,6 +4,7 @@ import com.sparta.springweektwo.bulletinboard.service.BulletinBoardService;
 import com.sparta.springweektwo.bulletinboard.dto.*;
 import com.sparta.springweektwo.comment.entity.Comment;
 import com.sparta.springweektwo.comment.service.CommentService;
+import com.sparta.springweektwo.exception.dto.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +44,17 @@ public class BulletinBoardController {
 
     // 선택 게시글 수정
     @PatchMapping("/bulletin-boards/{id}")
-    public ResponseEntity<Message> update(@PathVariable Long id, @RequestBody BulletinBoardForm boardForm, HttpServletRequest request) {
-        Message message = bulletinBoardService.update(id, boardForm, request);
+    public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody BulletinBoardForm boardForm, HttpServletRequest request) {
+        Message message = null;
+        try {
+            message = bulletinBoardService.update(id, boardForm, request);
+        }
+        catch (IllegalAccessException e) {
+            return new ResponseEntity<>(new ExceptionMessage("작성자만 삭제/수정할 수 있습니다.", BAD_REQUEST), BAD_REQUEST);
+        }
+        catch (RuntimeException e) {
+            return new ResponseEntity<>(new ExceptionMessage("토큰이 유효하지 않습니다.",BAD_REQUEST), BAD_REQUEST);
+        }
 
         if (message.getSuccess() == false) {
             return new ResponseEntity<>(message, UNAUTHORIZED);
@@ -55,7 +65,17 @@ public class BulletinBoardController {
 
     // 선택 게시글 삭제
     @DeleteMapping("/bulletin-boards/{id}")
-    public ResultDto remove(@PathVariable Long id, HttpServletRequest request) {
-        return bulletinBoardService.softDelete(id, request);
+    public ResponseEntity<Object> remove(@PathVariable Long id, HttpServletRequest request) {
+        ResultDto resultDto = null;
+        try {
+            resultDto = bulletinBoardService.softDelete(id, request);
+        } catch (IllegalAccessException e) {
+            return new ResponseEntity<>(new ExceptionMessage("작성자만 삭제/수정할 수 있습니다.", BAD_REQUEST), BAD_REQUEST);
+        }
+        catch (RuntimeException e) {
+            return new ResponseEntity<>(new ExceptionMessage("토큰이 유효하지 않습니다.",BAD_REQUEST), BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(resultDto, OK);
     }
 }
