@@ -35,8 +35,8 @@ public class BulletinBoardController {
     // 선택 게시글 조회
     @GetMapping("/bulletin-boards/{id}")
     public BulletinBoardResponseDto readOne(@PathVariable Long id) {
-        List<Comment> comments = commentService.readAll(id);
-        BulletinBoardResponseDto board = bulletinBoardService.readOneV2(id);
+        List<Comment> comments = commentService.read(id);
+        BulletinBoardResponseDto board = bulletinBoardService.readOne(id);
 
         return new BulletinBoardResponseDto(board, comments);
     }
