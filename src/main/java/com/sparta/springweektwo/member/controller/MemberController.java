@@ -42,9 +42,10 @@ public class MemberController {
 
         try {
             memberToken = memberService.login(loginDto);
-        } catch (IllegalArgumentException e) {
-            AuthMessage authMessage = new AuthMessage("로그인 실패", UNAUTHORIZED.value());
-            return new ResponseEntity<>(authMessage, UNAUTHORIZED);
+        }
+        catch (IllegalArgumentException e) {
+            AuthMessage authMessage = new AuthMessage("회원을 찾을 수 없습니다.", BAD_REQUEST.value());
+            return new ResponseEntity<>(authMessage, BAD_REQUEST);
         }
         response.addHeader("Authorization", memberToken);
 
